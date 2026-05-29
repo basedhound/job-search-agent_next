@@ -7,11 +7,19 @@
 
   <div>
 <img src="https://img.shields.io/badge/-Next.js-black?style=for-the-badge&logo=Next.js&logoColor=white" />
-<img src="https://img.shields.io/badge/-Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white" />
+<img src="https://img.shields.io/badge/-TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white" />
+<img src="https://img.shields.io/badge/-Tailwind%20CSS-06B6D4?style=for-the-badge&logo=Tailwind%20CSS&logoColor=white" />
+<img src="https://img.shields.io/badge/-shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white" />
+<br />
+<img src="https://img.shields.io/badge/-OpenAI%20GPT--4o-412991?style=for-the-badge&logo=OpenAI&logoColor=white" />
+<img src="https://img.shields.io/badge/-Stagehand-orange?style=for-the-badge" />
+<img src="https://img.shields.io/badge/-Browserbase-000000?style=for-the-badge" />
+<img src="https://img.shields.io/badge/-AgentSpan-blueviolet?style=for-the-badge" />
+<img src="https://img.shields.io/badge/-InsForge-darkgreen?style=for-the-badge" />
 
   </div>
 
-  <h3 align="center">Project Title Here</h3>
+  <h3 align="center">JobPilot | Match-tracking AI Agent</h3>
 
    <div align="center">
      Build this project step by step with our detailed tutorial on <a href="https://www.youtube.com/watch?v=XUkNR-JfHwo" target="_blank"><b>JavaScript Mastery</b></a> YouTube. Join the JSM family!
@@ -37,7 +45,9 @@ If you prefer visual learning, this is the perfect resource for you. Follow our 
 
 ## <a name="introduction">✨ Introduction</a>
 
-AI-powered Nike-style eCommerce built with Devin AI, Next.js, Drizzle ORM, and Better Auth! Devin generates your product pages, cart, and checkout flows—powered by Stripe payments and a PostgreSQL (Neon) backend. Featuring a clean, modular UI and tools tailored for devs who want to ship fast.
+JobPilot is an autonomous, full-stack AI agent that transforms how technical job seekers find work by simultaneously browsing LinkedIn, Wellfound, and YC Jobs to discover, score, and apply to roles. Powered by Next.js, GPT-4o, and Browserbase/Stagehand automation, the app dynamically customizes resumes and executes real browser application forms autonomously. More than just a utility, JobPilot serves as a masterclass in modern agentic engineering, utilizing five core open-source skills—/architect, /remember, /review, /recover, and /imprint—to demonstrate how a single developer with a structured system can rapidly ship durable, production-grade AI software.
+
+An experimental Browserbase/Stagehand apply path is included for review — see [BROWSERBASE_REPORT.md](BROWSERBASE_REPORT.md) for full details on what was attempted and where it currently stands.
 
 If you're getting started and need assistance or face any bugs, join our active Discord community with over **50k+** members. It's a place where people help each other out.
 
@@ -45,37 +55,35 @@ If you're getting started and need assistance or face any bugs, join our active 
 
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
-- **[Better Auth](https://www.better-auth.com/)** is a framework-agnostic authentication and authorization library for TypeScript. It provides built-in support for email and password authentication, social sign-on (Google, GitHub, Apple, and more), and multi-factor authentication, simplifying user authentication and account management.
+- **[Next.js](https://nextjs.org/)** is a full-stack React framework that powers JobPilot's user interface, utilizing the App Router, Server Actions, and API Routes to deliver server-rendered components and high-performance client-side navigation.
+- **[TypeScript](https://www.typescriptlang.org/)** is a strongly typed programming language that builds on JavaScript, ensuring strict type safety across the entire codebase and providing a maintainable environment for complex agent orchestration.
+- **[Tailwind CSS v3.4](https://tailwindcss.com/)** is a utility-first CSS framework used for rapid UI development, providing a clean, responsive, and easily customized styling infrastructure.
+- **[shadcn/ui](https://ui.shadcn.com/)** is a collection of re-usable UI components built using Radix Primitives and Tailwind CSS, serving as the design system for the app's dashboard, tables, and job inventory views.
+- **[OpenAI GPT-4o](https://openai.com/)** is a highly capable multimodal AI model that serves as the core intelligence engine, parsing job descriptions to compute match scores, tailoring resumes, and driving the form-filling automation logic.
+- **[Stagehand](https://github.com/browserbase/stagehand)** is an AI-driven browser agent built on top of Playwright that uses LLMs to interpret page elements dynamically, allowing JobPilot to execute LinkedIn Easy Apply paths and handle external ATS form-filling.
+- **[Browserbase](https://www.browserbase.com/)** is a headless cloud browser platform that manages infrastructure, session persistence, authentication states, and CAPTCHA solving so background jobs can run through realistic browser instances.
+- **[AgentSpan](https://www.agentspan.com/)** is a framework for durable agent orchestration and observability, providing execution reliability, error-recovery mechanisms, and idempotency across multi-step application tasks.
+- **[InsForge](https://insforge.com/)** is a comprehensive backend-as-a-service provider that supplies the relational PostgreSQL database to manage the job inventory, handles user authentication, and provides secure file storage for assets.
+- **[PostHog](https://posthog.com/)** is an all-in-one product analytics platform used to track user engagement, system performance metrics, and the success rates of automated application paths.
 
-- **[Devin AI](https://docs.devin.ai/get-started/devin-intro)** is an autonomous AI software engineer by Cognition Labs that independently plans, writes, debugs, and deploys full applications from natural language prompts. It integrates with tools like Slack, Linear, and Jira to manage tasks and pull requests, and learns new technologies on the fly by reading documentation.
-
-- **[Drizzle ORM](https://orm.drizzle.team/docs/overview)** is a lightweight and performant TypeScript ORM designed with developer experience in mind. It provides a seamless interface between application code and database operations while maintaining high performance and reliability.
-
-- **[Neon](https://neon.com/)** is a fully managed, serverless PostgreSQL database platform. It offers features like instant provisioning, autoscaling, and database branching, enabling developers to build scalable applications without managing infrastructure.
-
-- **[Next.js](https://nextjs.org/docs)** is a powerful React framework for building full-stack web applications. It simplifies development with features like server-side rendering, static site generation, and API routes, enabling developers to focus on building products and shipping quickly.
-
-- **[PostgreSQL](https://www.postgresql.org/)** is a powerful, open-source relational database system known for its reliability, data integrity, and robust feature set. It supports advanced data types, full ACID compliance, and extensibility, making it suitable for a wide range of applications.
-
-- **[Stripe](https://stripe.com/)** is a payment gateway that enables businesses to accept, process, and manage various payment methods, such as credit cards, debit cards, and digital wallets, in a secure and efficient manner. It simplifies the payment process for developers and businesses alike.
-
-- **[TypeScript](https://www.typescriptlang.org/)** is a superset of JavaScript that adds static typing, providing better tooling, code quality, and error detection for developers. It is ideal for building large-scale applications and enhances the development experience.
-
-- **[Zustand](https://zustand-demo.pmnd.rs)** is a minimal, hook-based state management library for React. It lets you manage global state with zero boilerplate, no context providers, and excellent performance through selective state subscriptions.
 
 ## <a name="features">🔋 Features</a>
 
-👉 **Landing Page**: A fast, engaging homepage that introduces your brand and products with smooth animations and clear calls to action.
+👉 **LinkedIn Job Discovery**: Authenticated LinkedIn search utilizing a saved Browserbase context session to fetch job titles, companies, locations, and source/apply URLs automatically.
 
-👉 **Product Listing Page**: Browse all products with filters, sorting, and real-time availability—powered by Devin AI-generated content for dynamic updates.
+👉 **Match Scoring**: Advanced evaluation where each discovered job is parsed and scored against your professional profile by an LLM, then ranked by match percentage.
 
-👉 **Auth Pages**: Secure and seamless user signup, login, and password recovery using Better Auth, ensuring smooth access without backend hassles.
+👉 **Job Inventory**: A central, filterable dashboard table that organizes matched jobs with quick access to source links, external apply links, application types, and real-time status.
 
-👉 **Product Details Page**: Detailed product info, images, and reviews with AI-enhanced descriptions to help customers make confident buying decisions.
+👉 **Job Details**: A dedicated, per-job review view featuring a transparent match breakdown, full descriptions, direct resume controls, and manual apply triggers.
 
-👉 **Cart Page**: Intuitive cart management allowing users to add, remove, and update quantities, with instant price recalculations and persistent state via Zustand.
+👉 **Resume Generation & Tailoring**: Dynamic engine that generates a foundational resume from your user profile, then instantly customizes it to target specific job descriptions.
 
-👉 **Order Page**: Track order history and status with reliable data stored in PostgreSQL (Neon), plus secure payments handled by Stripe integration.
+👉 **LinkedIn Easy Apply**: An experimental, automated application path utilizing saved LinkedIn session contexts and Stagehand DOM mode to submit applications directly.
+
+👉 **External Apply Attempt**: An experimental, hybrid-mode browser path powered by Stagehand designed to navigate complex external ATS forms and complete inputs autonomously.
+
+👉 **Session Recordings**: Complete transparency layer that links every automated application attempt to a Browserbase video recording URL for auditing and debugging.
 
 And many more, including code architecture and reusability.
 
@@ -111,10 +119,33 @@ npm install
 Create a new file named `.env` in the root of your project and add the following content:
 
 ```env
+# InsForge (backend database + auth)
+NEXT_PUBLIC_INSFORGE_URL=https://your-app.region.insforge.app
+NEXT_PUBLIC_INSFORGE_ANON_KEY=your-insforge-anon-key
+INSFORGE_SERVICE_ROLE_KEY=your-insforge-service-role-key
 
+# Browserbase
+BROWSERBASE_API_KEY=your-browserbase-api-key
+BROWSERBASE_PROJECT_ID=your-browserbase-project-id
+
+# Optional: enable Browserbase advanced stealth mode
+# BROWSERBASE_ADVANCED_STEALTH=true
+
+# OpenAI
+OPENAI_API_KEY=your-openai-api-key
+
+# AgentSpan (durable agent orchestration)
+AGENTSPAN_API_KEY=your-agentspan-api-key
+
+# App URL (used for OAuth callback and AgentSpan webhooks)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Optional: PostHog analytics
+# NEXT_PUBLIC_POSTHOG_KEY=your-posthog-key
+# NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 ```
 
-Replace the placeholder values with your real credentials. You can get these by signing up at: [**Example**](https://jsm.dev/example).
+Replace the placeholder values with your real credentials. You can get these by signing up at: [**InsForge**](https://insforge.dev/), [**Browserbase**](https://www.browserbase.com/), [**OpenAI**](https://platform.openai.com/), [**Agentspan**](https://agentspan.ai/), [**PostHog**](hhttps://posthog.com/).
 
 **Running the Project**
 
@@ -124,21 +155,39 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
 
+**How It Works**
+
+1. **Set up your profile** — fill in your experience, skills, target role, salary expectations, and upload a base resume PDF
+2. **Connect LinkedIn** — save a LinkedIn browser session via Browserbase so job discovery can run authenticated
+3. **Find Jobs** — the agent searches LinkedIn for roles matching your target, scores each one, and saves strong matches to your job inventory
+4. **Review matches** — browse the `/jobs` list, click into any role for the full description, match breakdown, and apply links
+5. **Tailor and apply** — generate a tailored resume for a specific role, then use the apply links directly or trigger the experimental Browserbase apply attempt
+
+**Browserbase Integration**
+
+See [BROWSERBASE_REPORT.md](BROWSERBASE_REPORT.md) for a detailed report on how Browserbase and Stagehand are used in this project, including the full history of the apply automation experiments and the current project state.
+
+**Deploy on Vercel**
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
 ## <a name="links">🔗 Assets</a>
 
-Assets and snippets used in the project can be found in the **[video kit]()**.
+Assets and snippets used in the project can be found in the **[video kit](https://jsm.dev/jobpilot-kit)**.
 
-<a href="" target="_blank">
+<a href="https://jsm.dev/jobpilot-kit" target="_blank">
   <img src="public/readme/readme-videokit.webp" alt="Video Kit Banner">
 </a>
 
 ## <a name="more">🚀 More</a>
 
-**Advance your skills with Next.js Pro Course**
+**Advance your skills with our Pro Course**
 
 Enjoyed creating this project? Dive deeper into our PRO courses for a richer learning adventure. They're packed with
 detailed explanations, cool features, and exercises to boost your skills. Give it a go!
 
-<a href="" target="_blank">
+<a href="https://jsm.dev/jobpilot-jsm" target="_blank">
   <img src="public/readme/readme-jsmpro.webp" alt="Project Banner">
 </a>
