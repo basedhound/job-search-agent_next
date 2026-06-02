@@ -1,62 +1,79 @@
-# Memory — Homepage Build (Feature 01)
+# Memory — Feature 02: Auth
 
 Last updated: 2026-06-02
 
 ## What was built
 
-**Feature 01 — Homepage** fully complete and visually verified.
+- `.env.local` — `NEXT_PUBLIC_INSFORGE_URL=https://zz5cad4a.ap-southeast.insforge.app` + anon key populated
+- `lib/insforge-client.ts` — browser singleton using `createClient` from `@insforge/sdk`
+- `lib/insforge-server.ts` — server factory: reads `insforge_token` cookie, calls `client.setAccessToken(token)`, returns client with `isServerMode: true`
+- `app/(auth)/login/page.tsx` — Google + GitHub OAuth buttons, client component
+- `app/(auth)/callback/page.tsx` — OAuth callback handler, client component
+- `app/middleware.ts` — protects `/dashboard`, `/profile`, `/find-jobs` — redirects to `/login` if no `insforge_token` cookie
+- `context/context/ui-registry.md` — updated with Login Page and Auth Loader patterns
 
-Files created:
-- `components/layout/Navbar.tsx` — sticky white navbar, logo, 3 nav links, dark "Start for free" CTA
-- `components/layout/Footer.tsx` — dark overlay footer, white logo via CSS filter, Privacy Policy + Terms links
-- `components/homepage/Hero.tsx` — gradient hero, headline, sub, dual CTAs, dashboard screenshot
-- `components/homepage/HowItWorks.tsx` — two alternating 2-col feature sections with public images
-- `components/homepage/Features.tsx` — testimonial + bottom CTA (same gradient as hero)
-- `app/page.tsx` — composes Navbar + Hero + HowItWorks + Features + Footer
+`@insforge/sdk` installed. Middleware is at `app/middleware.ts` (Next.js 15+ location — NOT root `middleware.ts`).
 
-Files modified:
-- `app/globals.css` — added `--gradient-hero` CSS variable at the bottom of `@theme` block
-- `context/context/progress-tracker.md` — 01 Homepage marked complete
-- `context/context/ui-registry.md` — all 5 new components documented with exact classes
+---
 
 ## Decisions made
 
-- **Context files are at `context/context/`** (double-nested) — not `context/` as the architecture.md diagram implies. Always use the full path.
-- **Gradient via CSS variable** — `--gradient-hero` defined in `globals.css` @theme, referenced in components as `style={{ background: "var(--gradient-hero)" }}`. This is the correct pattern for gradients — not inline hex, not Tailwind arbitrary values.
-- **Footer logo white** — uses `style={{ filter: "brightness(0) invert(1)" }}` to render the purple logo.png as white on dark background. Only one logo asset exists.
-- **All CTAs link to `/login`** — auth not built yet (Feature 02 is next). "Get Started", "Start for free", "Find Your First Match" all point to `/login`.
-- **All components are Server Components** — no `"use client"` needed anywhere on the homepage.
-- **Tailwind radius classes** — used Tailwind default scale (`rounded-lg` = 8px, `rounded-2xl` = 16px, `rounded-full`) because the custom `@theme` radius tokens may not correctly override built-in utility names in Tailwind v4.
+**`@insforge/ssr` does not exist** — architecture.md's `createBrowserClient` / `createServerClient` pattern is aspirational. The real package is `@insforge/sdk` with `createClient`. The server client uses `isServerMode: true` config option instead.
+
+**Token cookie strategy** — after OAuth callback the access token is stored in a browser-set `insforge_token` cookie (`SameSite=Lax`, 7-day max-age). Middleware reads this cookie. Server-side code reads it via `cookies()` and sets it on the server client with `client.setAccessToken()`.
+
+**Public SDK internals** — `client.setAccessToken(token)` is the correct public API for setting a token server-side. `client.getHttpClient().userToken` holds the current token at runtime (own property, accessible but not TypeScript-typed). `getCurrentUser()` internally awaits `auth.authCallbackHandled` — use it to wait for the SDK's auto OAuth exchange to complete.
+
+**Context files are at `context/context/`** — double-nested path, not `context/`. Always use full path.
+
+---
 
 ## Problems solved
 
-- **Context files nested** — the path `context/context/` not `context/` — caught when first Read attempt failed.
-- **playwright for visual verification** — installed temporarily as devDependency, then uninstalled after screenshots. Build + browser verified clean.
-- **public/public directory** — exists but is empty. Ignore it.
+**`tokenManager` is private** — TypeScript blocks `client.tokenManager.setAccessToken()`. Use public `client.setAccessToken(token)` instead.
+
+**SDK auto-detects OAuth callback** — the `Auth` constructor calls `detectAuthCallback()` immediately on client creation. It reads and removes `insforge_code` from the URL and starts `exchangeOAuthCode` before any React code runs. Callback pages must work WITH this auto-detection, not alongside it.
+
+**`@insforge/ssr` 404** — tried installing, confirmed it does not exist. Do not attempt again.
+
+---
 
 ## Current state
 
-- Homepage is fully built and visually matches the design (`context/context/designs/landing-page.png`).
-- All links go to `/login` (which doesn't exist yet — will 404 until Feature 02).
-- Dev server confirmed working at port 3000.
-- Build (`next build`) compiles cleanly with no TypeScript errors.
-- 0 other packages installed yet — only Next.js 16, React 19, Tailwind v4 in the project.
+**Feature 02 is implemented but has critical unfixed bugs. The auth flow does NOT work end-to-end.**
+
+**Critical bug 1 — Callback race condition (all logins will fail)**
+
+The `insforge` singleton calls `auth.detectAuthCallback()` at module import time — before React mounts, before `useEffect` fires. It reads `insforge_code` from the URL and removes it via `history.replaceState`. By the time the callback page's `useEffect` runs, the code is gone. `code` is `null`, the page redirects back to `/login`.
+
+**Fix:** Replace `exchangeOAuthCode` in the callback page with `getCurrentUser()` (which awaits `authCallbackHandled`) then read the token via `insforge.getHttpClient().userToken` (cast to `Record<string, unknown>` to bypass TypeScript).
+
+**Critical bug 2 — Expired tokens bypass middleware**
+
+The `insforge_token` cookie has a 7-day max-age but the JWT inside is short-lived. Middleware only checks cookie presence. After token expiry, users still pass middleware but all server-side calls fail with 401.
+
+**Fix:** Decode the JWT `exp` claim in middleware (no verification needed — just parse the payload) and redirect to `/login` if expired.
+
+**Important bug 3 — Login loading state never resets on error**
+
+If `signInWithOAuth` throws, `setLoading` stays set and buttons are permanently disabled. Needs `try/finally` wrapping.
+
+---
 
 ## Next session starts with
 
-**Feature 02 — Auth** (InsForge Google + GitHub OAuth).
+Fix the three bugs above before moving to Feature 03. In order:
 
-Per build-plan.md:
-- Login page UI at `app/(auth)/login/page.tsx` — Google OAuth button, GitHub OAuth button
-- OAuth callback handler at `app/(auth)/callback/page.tsx`
-- Middleware at `middleware.ts` protecting `/dashboard`, `/profile`, `/find-jobs`, `/find-jobs/[id]`
-- On login: check `profiles.is_complete` → redirect to `/profile` if false, `/dashboard` if true
+1. **Fix callback page** — replace `exchangeOAuthCode` call with `getCurrentUser()` + `(insforge.getHttpClient() as Record<string, unknown>).userToken as string` pattern
+2. **Fix middleware** — parse JWT `exp` from `insforge_token` cookie, redirect if expired or invalid
+3. **Fix login page** — wrap `signInWithOAuth` in `try/finally`, reset `loading` to `null` and show inline error on failure
 
-Before writing any auth code: check AGENTS.md for an InsForge skill, then check `context/context/library-docs.md` InsForge section. Install `@insforge/ssr` package first.
+After all three confirmed, move to **Feature 03 — PostHog Initialization** (build-plan.md step 03).
 
-Also check the Next.js 16 docs in `node_modules/next/dist/docs/` for middleware API before writing `middleware.ts` — it may differ from standard knowledge.
+---
 
 ## Open questions
 
-- What InsForge project URL and anon key will go in `.env.local`? The `.env.local` file exists but is empty. User needs to provide these before auth can be wired up.
-- Design file for the login page is at `context/context/designs/` — there is no login page design file listed. Check if one exists before building login UI.
+- What is the actual expiry duration of InsForge access tokens? Determines how aggressive middleware expiry check needs to be.
+- `allowedRedirectUrls` in InsForge dashboard is currently empty. Must add `http://localhost:3000/callback` (dev) and the production URL before OAuth will work at all.
+- Should `insforge_token` be `HttpOnly`? Currently set via `document.cookie` (XSS-readable). Making it HttpOnly requires a Next.js API route to set the cookie server-side after the callback. Decide before production.

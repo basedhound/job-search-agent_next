@@ -37,3 +37,54 @@ After building any component — update this file with the component name, file 
 ### Features (Testimonial + Bottom CTA)
 **File:** `components/homepage/Features.tsx`
 **Classes:** `text-xs font-semibold text-accent uppercase tracking-widest` (label), `text-2xl font-medium text-text-primary leading-relaxed` (blockquote), `text-4xl font-bold text-text-primary leading-tight` (CTA heading), gradient section reuses `var(--gradient-hero)`
+
+---
+
+### Login Page
+**File:** `app/(auth)/login/page.tsx`
+**Last updated:** 2026-06-02
+
+| Property | Value |
+| --- | --- |
+| Page background | `style={{ background: 'var(--gradient-hero)' }}` |
+| Card background | `style={{ background: 'var(--color-surface)' }}` |
+| Card border | `border` + `style={{ borderColor: 'var(--color-border)' }}` |
+| Card border radius | `rounded-[--radius-xl]` (16px) |
+| Card padding | `p-8` |
+| Card shadow | `style={{ boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1)' }}` |
+| Card max-width | `max-w-[400px]` |
+| Heading | `text-[22px] font-semibold leading-tight` + `color: var(--color-text-primary)` |
+| Subheading | `text-sm mt-1.5 text-center` + `color: var(--color-text-muted)` |
+| Legal / caption text | `text-xs text-center` + `color: var(--color-text-muted)` |
+| Button gap | `flex flex-col gap-3` |
+| OAuth button — light (Google) | `flex items-center justify-center gap-2.5 w-full py-2.5 px-4 rounded-[--radius-md] border text-sm font-medium` + `background: var(--color-surface)`, `borderColor: var(--color-border)`, `color: var(--color-text-primary)` |
+| OAuth button — light hover | JS `onMouseEnter` sets `background: var(--color-surface-secondary)` |
+| OAuth button — dark (GitHub) | `flex items-center justify-center gap-2.5 w-full py-2.5 px-4 rounded-[--radius-md] text-sm font-medium hover:opacity-90` + `background: var(--color-overlay-dark)`, `color: #ffffff` |
+| Disabled state | `disabled:opacity-50 disabled:cursor-not-allowed` |
+
+**Pattern notes:**
+- Page background reuses `var(--gradient-hero)` — same as Hero section. All full-screen auth pages should use this background.
+- Card styling uses inline `style` for all color tokens. This is because Tailwind v4 arbitrary-value syntax (`bg-[--color-surface]`) was not used. Future components should prefer `bg-[--color-surface]` class form to avoid mixing patterns.
+- The dark OAuth button uses hardcoded `#ffffff`. Should be `var(--color-accent-foreground)` — flag for fix.
+- OAuth button hover is done via JS `onMouseEnter/onMouseLeave` instead of CSS. Future auth buttons should use a Tailwind hover class instead.
+- `rounded-[--radius-md]` on buttons matches `rounded-lg` used by Navbar CTA — they are the same 8px value.
+- Dark button background uses `var(--color-overlay-dark)` (`#131316`). Navbar CTA uses `bg-overlay` (`#111827`). These are visually near-identical but technically different tokens — standardise on `var(--color-overlay-dark)` for dark buttons going forward.
+
+---
+
+### Auth Full-Screen Loader (Callback)
+**File:** `app/(auth)/callback/page.tsx`
+**Last updated:** 2026-06-02
+
+| Property | Value |
+| --- | --- |
+| Page background | `style={{ background: 'var(--gradient-hero)' }}` |
+| Content layout | `flex flex-col items-center gap-3` |
+| Loading text | `text-sm font-medium` + `color: var(--color-text-muted)` |
+| Spinner track | `stroke="var(--color-border)"` |
+| Spinner fill | `stroke="var(--color-accent)"` |
+| Spinner size | `28px` |
+
+**Pattern notes:**
+- Full-screen loading states use the same `var(--gradient-hero)` background as the login page. Keeps the auth flow visually unified.
+- Spinner uses two strokes: muted border color for the track, accent purple for the moving arc. Use this exact pattern for any auth-flow loading state.
