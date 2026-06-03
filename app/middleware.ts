@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const PROTECTED = ['/dashboard', '/profile', '/find-jobs'];
 
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()) as {
+      exp?: number;
+    };
+    return typeof payload.exp !== 'number' || payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+}
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isProtected = PROTECTED.some((route) => pathname.startsWith(route));
@@ -9,7 +20,7 @@ export function middleware(req: NextRequest) {
   if (!isProtected) return NextResponse.next();
 
   const token = req.cookies.get('insforge_token')?.value;
-  if (!token) {
+  if (!token || isTokenExpired(token)) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 

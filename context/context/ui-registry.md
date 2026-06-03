@@ -42,14 +42,14 @@ After building any component — update this file with the component name, file 
 
 ### Login Page
 **File:** `app/(auth)/login/page.tsx`
-**Last updated:** 2026-06-02
+**Last updated:** 2026-06-03 (redesigned)
 
 | Property | Value |
 | --- | --- |
 | Page background | `style={{ background: 'var(--gradient-hero)' }}` |
 | Card background | `style={{ background: 'var(--color-surface)' }}` |
 | Card border | `border` + `style={{ borderColor: 'var(--color-border)' }}` |
-| Card border radius | `rounded-[--radius-xl]` (16px) |
+| Card border radius | `style={{ borderRadius: 'var(--radius-xl)' }}` (16px) |
 | Card padding | `p-8` |
 | Card shadow | `style={{ boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1)' }}` |
 | Card max-width | `max-w-[400px]` |
@@ -57,18 +57,18 @@ After building any component — update this file with the component name, file 
 | Subheading | `text-sm mt-1.5 text-center` + `color: var(--color-text-muted)` |
 | Legal / caption text | `text-xs text-center` + `color: var(--color-text-muted)` |
 | Button gap | `flex flex-col gap-3` |
-| OAuth button — light (Google) | `flex items-center justify-center gap-2.5 w-full py-2.5 px-4 rounded-[--radius-md] border text-sm font-medium` + `background: var(--color-surface)`, `borderColor: var(--color-border)`, `color: var(--color-text-primary)` |
+| OAuth button — light (Google) | `flex items-center justify-center gap-2.5 w-full py-2.5 px-4 border text-sm font-medium` + `borderRadius: var(--radius-md)`, `background: var(--color-surface)`, `borderColor: var(--color-border)`, `color: var(--color-text-primary)` |
 | OAuth button — light hover | JS `onMouseEnter` sets `background: var(--color-surface-secondary)` |
-| OAuth button — dark (GitHub) | `flex items-center justify-center gap-2.5 w-full py-2.5 px-4 rounded-[--radius-md] text-sm font-medium hover:opacity-90` + `background: var(--color-overlay-dark)`, `color: #ffffff` |
+| OAuth button — dark (GitHub) | `flex items-center justify-center gap-2.5 w-full py-2.5 px-4 text-sm font-medium hover:opacity-90` + `borderRadius: var(--radius-md)`, `background: var(--color-overlay-dark)`, `color: var(--color-accent-foreground)` |
 | Disabled state | `disabled:opacity-50 disabled:cursor-not-allowed` |
+| Error state | `text-sm text-center mt-4` + `color: var(--color-error)` |
 
 **Pattern notes:**
-- Page background reuses `var(--gradient-hero)` — same as Hero section. All full-screen auth pages should use this background.
-- Card styling uses inline `style` for all color tokens. This is because Tailwind v4 arbitrary-value syntax (`bg-[--color-surface]`) was not used. Future components should prefer `bg-[--color-surface]` class form to avoid mixing patterns.
-- The dark OAuth button uses hardcoded `#ffffff`. Should be `var(--color-accent-foreground)` — flag for fix.
-- OAuth button hover is done via JS `onMouseEnter/onMouseLeave` instead of CSS. Future auth buttons should use a Tailwind hover class instead.
-- `rounded-[--radius-md]` on buttons matches `rounded-lg` used by Navbar CTA — they are the same 8px value.
-- Dark button background uses `var(--color-overlay-dark)` (`#131316`). Navbar CTA uses `bg-overlay` (`#111827`). These are visually near-identical but technically different tokens — standardise on `var(--color-overlay-dark)` for dark buttons going forward.
+- All border-radius values use inline `style={{ borderRadius: 'var(--radius-*)' }}` — do NOT use `rounded-[--radius-*]` Tailwind arbitrary value syntax. In Tailwind v4, `[--var]` bracket syntax does not wrap in `var()` and produces invalid CSS. Always use inline style or `rounded-(--radius-*)` parenthesis syntax.
+- All full-screen auth pages use `var(--gradient-hero)` as page background.
+- Card styling uses inline `style` for all token values throughout.
+- OAuth button hover is done via JS `onMouseEnter/onMouseLeave` — acceptable for auth page, but prefer CSS hover classes for other components.
+- Dark button background uses `var(--color-overlay-dark)` (`#131316`). Navbar CTA uses `bg-overlay` (`#111827`). Standardise on `var(--color-overlay-dark)` for dark buttons going forward.
 
 ---
 

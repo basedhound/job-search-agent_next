@@ -9,24 +9,29 @@ export default function CallbackPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('insforge_code');
-      const oauthError = params.get('error');
-
-      if (oauthError || !code) {
+      const oauthError = new URLSearchParams(window.location.search).get('error');
+      if (oauthError) {
         router.replace('/login');
         return;
       }
 
-      const { data, error } = await insforge.auth.exchangeOAuthCode(code);
+      // SDK auto-detected insforge_code at module init time and is exchanging it
+      // asynchronously. getCurrentUser() awaits authCallbackHandled before returning.
+      const { data, error } = await insforge.auth.getCurrentUser();
 
-      if (error || !data?.accessToken) {
+      if (error || !data?.user) {
         router.replace('/login');
         return;
       }
 
-      const maxAge = 60 * 60 * 24 * 7; // 7 days
-      document.cookie = `insforge_token=${data.accessToken}; path=/; SameSite=Lax; max-age=${maxAge}`;
+      const token = (insforge.getHttpClient() as Record<string, unknown>).userToken as
+        | string
+        | undefined;
+
+      if (token) {
+        const maxAge = 60 * 60 * 24 * 7;
+        document.cookie = `insforge_token=${token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+      }
 
       router.replace('/dashboard');
     };
