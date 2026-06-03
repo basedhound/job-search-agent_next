@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { insforge } from '@/lib/insforge-client';
+import posthog from 'posthog-js';
 
 export default function CallbackPage() {
   const router = useRouter();
@@ -23,6 +24,14 @@ export default function CallbackPage() {
         router.replace('/login');
         return;
       }
+
+      const user = data.user;
+      posthog.identify(user.id, {
+        email: user.email,
+      });
+      posthog.capture('user_signed_in', {
+        provider: user.providers?.[0],
+      });
 
       const token = (insforge.getHttpClient() as Record<string, unknown>).userToken as
         | string

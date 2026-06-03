@@ -1,5 +1,8 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 export function Features() {
   return (
@@ -43,12 +46,14 @@ export function Features() {
             <Link
               href="/login"
               className="inline-flex items-center gap-1 px-6 py-3 rounded-lg bg-overlay text-white text-sm font-medium hover:opacity-90 transition-opacity"
+              onClick={() => posthog.capture('cta_clicked', { cta_label: 'Get Started', cta_section: 'features_footer' })}
             >
               Get Started →
             </Link>
             <Link
               href="/login"
               className="inline-flex items-center px-6 py-3 rounded-lg bg-surface border border-border text-text-primary text-sm font-medium hover:bg-surface-secondary transition-colors"
+              onClick={() => posthog.capture('cta_clicked', { cta_label: 'Find Your First Match', cta_section: 'features_footer' })}
             >
               Find Your First Match
             </Link>

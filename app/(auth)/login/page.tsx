@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { insforge } from '@/lib/insforge-client';
+import posthog from 'posthog-js';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState<'google' | 'github' | null>(null);
@@ -11,15 +12,18 @@ export default function LoginPage() {
   const signIn = async (provider: 'google' | 'github') => {
     setLoading(provider);
     setError(null);
+    posthog.capture('sign_in_initiated', { provider });
     try {
       const { error: oauthError } = await insforge.auth.signInWithOAuth({
         provider,
         redirectTo: `${window.location.origin}/callback`,
       });
       if (oauthError) {
+        posthog.capture('sign_in_error', { provider, error: oauthError.message });
         setError('Something went wrong. Please try again.');
       }
-    } catch {
+    } catch (err) {
+      posthog.captureException(err);
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(null);

@@ -88,3 +88,101 @@ After building any component — update this file with the component name, file 
 **Pattern notes:**
 - Full-screen loading states use the same `var(--gradient-hero)` background as the login page. Keeps the auth flow visually unified.
 - Spinner uses two strokes: muted border color for the track, accent purple for the moving arc. Use this exact pattern for any auth-flow loading state.
+
+---
+
+### CompletionIndicator (Profile attention banner)
+**File:** `components/profile/CompletionIndicator.tsx`
+**Last updated:** 2026-06-03
+
+| Property | Value |
+| --- | --- |
+| Background | `rgba(255, 137, 4, 0.05)` inline style |
+| Border | `rgba(255, 137, 4, 0.2)` inline style |
+| Border radius | `borderRadius: 'var(--radius-xl)'` inline style |
+| Padding | `20px 24px` inline style |
+| Section heading | `text-sm font-semibold text-text-primary` |
+| Description | `text-sm text-text-secondary` |
+| Missing field tag bg | `rgba(255, 137, 4, 0.12)` |
+| Missing field tag text | `var(--color-warning)` |
+| Ring track | `stroke="var(--color-border)"` strokeWidth 6 |
+| Ring fill | `stroke="var(--color-accent)"` strokeWidth 6, strokeLinecap round |
+| Ring size | SVG 80×80, r=36, rotated -90deg from top |
+| Percentage text | `text-base font-bold text-text-primary` centered via `absolute inset-0 flex items-center justify-center` |
+
+---
+
+### ConnectedAccounts
+**File:** `components/profile/ConnectedAccounts.tsx`
+**Last updated:** 2026-06-03
+
+| Property | Value |
+| --- | --- |
+| Card | `bg-surface border border-border`, radius-xl, standard shadow |
+| LinkedIn icon container | `w-9 h-9`, `background: var(--color-linkedin)`, `borderRadius: var(--radius-md)` |
+| Account name | `text-sm font-medium text-text-primary` |
+| Status text | `text-xs text-text-muted` |
+| Connect button | `background: var(--color-linkedin)`, `borderRadius: var(--radius-md)`, white text |
+| Disconnect button | secondary style — `border-border text-text-secondary` |
+
+---
+
+### ResumeUpload
+**File:** `components/profile/ResumeUpload.tsx`
+**Last updated:** 2026-06-03
+
+| Property | Value |
+| --- | --- |
+| Card | `bg-surface border border-border`, radius-xl, standard shadow |
+| Drop zone border | `1.5px dashed var(--color-border-muted)`, dragging: `var(--color-accent)` |
+| Drop zone bg | `var(--color-surface-secondary)`, dragging: `var(--color-accent-muted)` |
+| Drop zone radius | `var(--radius-lg)` |
+| Select Resume btn | secondary — `bg-surface border-border text-text-primary` |
+| Generate btn | `background: var(--color-accent)` white text |
+| Uploading state | drop zone replaced with centered `text-sm font-medium text-text-secondary` — "Uploading..." |
+| Uploaded state | drop zone replaced by `ResumePreview` + "Replace resume" link (`text-xs text-text-secondary hover:text-text-primary`) |
+| Upload error | `text-sm text-error mt-2` below the drop zone |
+
+**Pattern notes:**
+- Once a resume URL exists (from DB on page load or after upload), the drop zone is replaced by `ResumePreview`. The drop zone is never shown alongside a preview.
+- "Replace resume" link is a plain text button (`text-xs`) — keeps the UI minimal post-upload.
+
+---
+
+### ResumePreview
+**File:** `components/profile/ResumePreview.tsx`
+**Last updated:** 2026-06-03
+
+Shown after a resume is uploaded. Filename, upload date, Download link. File icon uses `bg-accent-light` background with `color-accent` stroke SVG.
+
+---
+
+### ProfileForm
+**File:** `components/profile/ProfileForm.tsx`
+**Last updated:** 2026-06-03
+
+| Property | Value |
+| --- | --- |
+| Card | `bg-surface border border-border`, radius-xl, standard shadow |
+| Card title | `text-base font-semibold text-text-primary` |
+| Section heading | `text-sm font-semibold text-text-primary mb-4` |
+| Field label | `text-xs font-medium uppercase tracking-wide text-text-secondary mb-1.5` |
+| Input / textarea | `bg-surface border border-border px-3 py-2 text-sm text-text-primary`, `borderRadius: var(--radius-md)` |
+| Input focus | `focus:ring-1 focus:ring-accent focus:border-accent outline-none transition-colors` |
+| Input placeholder | `placeholder:text-text-muted` |
+| Select | same as input + `appearance-none` + `ChevronDownIcon` absolutely positioned right-3 |
+| Skill tag pill | `bg-accent-light text-accent rounded-full px-2.5 py-1 text-xs font-medium` |
+| Industry tag pill | `bg-surface-secondary text-text-secondary rounded-full px-2.5 py-1 text-xs font-medium` |
+| Work exp entry card | `border border-border p-4`, `borderRadius: var(--radius-lg)` |
+| Section divider | `border-t border-border mb-6` |
+| Save Profile button | full-width `py-3 text-sm font-medium text-white`, `background: var(--color-accent)`, `borderRadius: var(--radius-md)` |
+| Save button — saving | label becomes "Saving..." + `disabled:opacity-60` |
+| Save button — saved | label becomes "Saved!" for 3 seconds, then resets |
+| Save error | `text-sm text-error mb-4` above the button |
+
+**Pattern notes:**
+- All selects use `appearance-none` + absolutely-positioned `ChevronDownIcon` SVG for consistent cross-browser styling
+- Tag inputs add on Enter key or Add button click; X button removes individual tags
+- Work experience entries: last entry cannot be removed (remove button hidden when length === 1)
+- Disabled Email input: `opacity-50 cursor-not-allowed` + `bg-surface-secondary` via inline style
+- Save button state cycle: idle → "Saving..." (disabled) → "Saved!" (3 sec) → idle. On error: idle → "Saving..." → idle + error text shown above button. Use this exact cycle for any primary save action.

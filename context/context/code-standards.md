@@ -224,6 +224,9 @@ All PostHog events must use these exact event names. Never invent new event name
 
 | Event                    | When                                       | Key Properties                         |
 | ------------------------ | ------------------------------------------ | -------------------------------------- |
+| `sign_in_initiated`      | OAuth sign-in button clicked               | provider                               |
+| `sign_in_error`          | OAuth sign-in fails                        | provider, error                        |
+| `user_signed_in`         | OAuth callback completes, user identified  | userId, email, provider                |
 | `job_search_started`     | Find Jobs button clicked                   | userId, jobTitle, location             |
 | `job_found`              | Each job discovered and saved              | userId, source, matchScore             |
 | `job_url_submitted`      | User pastes a job URL and imports it       | userId                                 |
@@ -232,7 +235,7 @@ All PostHog events must use these exact event names. Never invent new event name
 | `profile_completed`      | User saves complete profile for first time | userId                                 |
 | `linkedin_connected`     | User connects LinkedIn account             | userId                                 |
 
-These seven events are the only events in this project. Do not add more without updating this list first.
+These ten events are the only events in this project. Do not add more without updating this list first.
 
 `job_found` and `resume_tailored` power the dashboard analytics charts — always fire them with correct properties.
 
@@ -249,8 +252,8 @@ All environment variables defined in `.env.local` for development. Never hardcod
 | `BROWSERBASE_API_KEY`           | lib/browserbase.ts     |
 | `BROWSERBASE_PROJECT_ID`        | lib/browserbase.ts     |
 | `OPENAI_API_KEY`                | agent/ functions       |
-| `NEXT_PUBLIC_POSTHOG_KEY`       | lib/posthog-client.ts  |
-| `NEXT_PUBLIC_POSTHOG_HOST`      | lib/posthog-client.ts  |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | instrumentation-client.ts, lib/posthog-server.ts |
+| `NEXT_PUBLIC_POSTHOG_HOST`          | instrumentation-client.ts, lib/posthog-server.ts |
 
 `NEXT_PUBLIC_` prefix means the variable is exposed to the browser. Never add `NEXT_PUBLIC_` to secret keys.
 

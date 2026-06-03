@@ -6,9 +6,9 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Current Status
 
-**Phase:** Phase 1 — Foundation
-**Last completed:** 02 Auth
-**Next:** 03 PostHog Initialization
+**Phase:** Phase 2 — Profile Page
+**Last completed:** 06 Profile Save Logic
+**Next:** 07 AI Profile Extraction from Resume
 
 ---
 
@@ -18,13 +18,13 @@ Update this file after every completed feature. Any AI agent reading this should
 
 - [x] 01 Homepage
 - [x] 02 Auth
-- [ ] 03 PostHog Initialization
-- [ ] 04 Database Schema
+- [x] 03 PostHog Initialization
+- [x] 04 Database Schema
 
 ### Phase 2 — Profile Page
 
-- [ ] 05 Profile Page — Full UI
-- [ ] 06 Profile Save Logic
+- [x] 05 Profile Page — Full UI
+- [x] 06 Profile Save Logic
 - [ ] 07 AI Profile Extraction from Resume
 - [ ] 08 Resume PDF Generation from Profile
 - [ ] 09 LinkedIn Connection via Browserbase Context
@@ -58,10 +58,23 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Decisions Made During Build
 
-_Add decisions here as they are made during implementation._
+- **Navbar active state** — `usePathname()` used to highlight current nav link in accent color. Checks `pathname === href || pathname.startsWith(href + '/')` to handle nested routes (e.g. `/find-jobs/[id]`).
+- **Profile page max-width** — `860px` for the content column. Narrower than the site-wide 1440px to keep the form readable as a single column without stretching inputs across a wide viewport.
+- **CompletionIndicator is not a card** — the attention banner uses a warning-tinted background (`rgba(255,137,4,0.05)`) rather than white. All standard content cards remain white. This is the only non-white container in the page.
+- **Select arrow** — native `<select>` with `appearance-none` + absolute-positioned `ChevronDownIcon` SVG. Consistent across all dropdowns in the form.
+- **Tag input pattern** — skills and industries use an embedded `<input>` inside the tag container. Tags add on Enter or Add button. This pattern should be reused anywhere tag-style input is needed.
+- **Work experience entry count** — Remove button is hidden when only one entry exists. The form always shows at least one work experience entry.
+- **Profile upsert pattern** — no SDK upsert available. Check `maybeSingle()` first, then update or insert based on result. RLS policies scope both operations to `auth.uid() = id`.
+- **Resume upload via API route** — resume file is uploaded via `POST /api/resume/upload` (server-side, uses `createInsforgeServer()`). Browser client auth for storage is unreliable; server route guarantees auth via `insforge_token` cookie.
+- **Storage: uploadAuto()** — uses auto-generated key to avoid naming conflicts. Old resume files are not deleted on re-upload (acceptable for MVP; add `resume_pdf_key` column for cleanup in a later feature).
+- **Completion calculation** — 8 required fields: FULL NAME, PHONE, LOCATION, JOB TITLE, SKILLS, EXPERIENCE, EDUCATION, JOB TITLES. Calculated in `lib/profile-completion.ts`. `CompletionIndicator` hidden when profile is 100% complete.
+- **profile_completed PostHog event** — fired in `actions/profile.ts` when `is_complete` transitions from false → true for the first time. Uses `getPostHogClient()` from `lib/posthog-server.ts`.
+- **job_titles_seeking / preferred_locations** — stored as `text[]` in DB, displayed as comma-separated string in the form. Split on save, join on load.
+- **education stored as JSONB** — `{ degree, fieldOfStudy, institution, graduationYear }` object. Cast from `unknown` on read.
 
 ---
 
 ## Notes
 
-_Add notes here as the build progresses — workarounds, patterns, anything that differs from the context files._
+- `ResumePreview` is now rendered inside `ResumeUpload` conditionally — shown when a resume URL exists (either from DB on load or after a successful upload).
+- Email field is pre-filled from `authData.user.email` passed as `userEmail` prop — no longer hardcoded.
